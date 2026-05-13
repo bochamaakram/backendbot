@@ -1,0 +1,142 @@
+#!/usr/bin/env bash
+
+# ==============================================================================
+# BackendBot — Schema Architect CLI (Portable GitHub Edition)
+# Installs backend blueprints into any active project directory.
+# ==============================================================================
+
+# Dynamically resolve the source directory based on where the script is located
+# (Handles symlinks perfectly so it works when installed to ~/.local/bin)
+SCRIPT_PATH="$(readlink -f "${BASH_SOURCE[0]}")"
+SCRIPT_DIR="$(dirname "$SCRIPT_PATH")"
+# The script is in 'bin/', so the repository root is the parent directory
+SOURCE_DIR="$(dirname "$SCRIPT_DIR")"
+
+DEST_DIR="$(pwd)"
+
+# Elegant Terminal Palette
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+PURPLE='\033[0;35m'
+CYAN='\033[0;36m'
+YELLOW='\033[1;33m'
+BOLD='\033[1m'
+DIM='\033[2m'
+NC='\033[0m' # No Color
+
+# Premium Icons
+CHECK_MARK="🟢"
+ERROR_X="🔴"
+INFO_CIRCLE="🔵"
+SPARKLES="✨"
+FOLDER="📁"
+ARROW="⚡"
+
+# Print a beautiful ASCII-styled header
+print_header() {
+    echo -e "${PURPLE}${BOLD}┌────────────────────────────────────────────────────────┐${NC}"
+    echo -e "${PURPLE}${BOLD}│${NC}  ${SPARKLES}  ${BOLD}BackendBot — Schema Architect CLI${NC}             ${PURPLE}${BOLD}│${NC}"
+    echo -e "${PURPLE}${BOLD}└────────────────────────────────────────────────────────┘${NC}"
+}
+
+show_help() {
+    print_header
+    echo -e "Easily inject the Back Office architecture schemas into your current project."
+    echo -e ""
+    echo -e "${BOLD}Usage:${NC}"
+    echo -e "  ${CYAN}backendbot${NC} [command]"
+    echo -e ""
+    echo -e "${BOLD}Commands:${NC}"
+    echo -e "  ${GREEN}init${NC}      Copy the architecture schemas (${DIM}docs/schema/${NC}) to your current project"
+    echo -e "  ${CYAN}status${NC}    Verify if backendbot schemas are present in this directory"
+    echo -e "  ${YELLOW}help${NC}      Show this interactive guide"
+    echo -e ""
+    echo -e "${DIM}Source blueprints at: ${BLUE}${SOURCE_DIR}${NC}"
+    echo -e ""
+}
+
+init_schemas() {
+    print_header
+    
+    if [ ! -d "$SOURCE_DIR/docs/schema" ]; then
+        echo -e "${ERROR_X} ${RED}${BOLD}Error:${NC} Source schemas not found at: ${BLUE}$SOURCE_DIR/docs/schema${NC}"
+        echo -e "Please make sure your backendbot repository is complete."
+        exit 1
+    fi
+
+    # Avoid copying onto itself
+    if [ "$DEST_DIR" = "$SOURCE_DIR" ] || [ "$DEST_DIR" = "$SOURCE_DIR/docs" ] || [ "$DEST_DIR" = "$SOURCE_DIR/docs/schema" ]; then
+        echo -e "${ERROR_X} ${RED}${BOLD}Error:${NC} You are running this command inside the BackendBot source repository."
+        echo -e "Run this command inside the project where you want to ${BOLD}add${NC} the schemas!"
+        exit 1
+    fi
+
+    echo -e "${INFO_CIRCLE} ${CYAN}Preparing to inject schemas to:${NC} ${BOLD}${DEST_DIR}${NC}"
+    
+    # Check if target directories already exist
+    if [ -d "$DEST_DIR/docs/schema" ]; then
+        echo -e "\n${YELLOW}⚠️  Warning:${NC} 'docs/schema' already exists in this project."
+        read -r "confirm?👉 Do you want to overwrite existing schema files? (y/N) "
+        echo "" # New line
+        if [[ ! "$confirm" =~ ^[yY]$ ]]; then
+            echo -e "${ERROR_X} ${RED}Action aborted by user.${NC}"
+            exit 1
+        fi
+    fi
+
+    # Create docs folder
+    mkdir -p "$DEST_DIR/docs"
+    
+    # Copy files
+    echo -e "${ARROW} Syncing schemas..."
+    cp -r "$SOURCE_DIR/docs/schema" "$DEST_DIR/docs/"
+    
+    if [ $? -eq 0 ]; then
+        echo -e "\n${CHECK_MARK} ${GREEN}${BOLD}Success! Backend schemas successfully integrated!${NC}"
+        echo -e "\n${BOLD}Generated Blueprint Files:${NC}"
+        ls "$DEST_DIR/docs/schema" | sed "s/^/  ${FOLDER} /"
+        echo -e "\n${SPARKLES} Your AI agents and developers now have an authoritative blueprint at ${CYAN}docs/schema/${NC}."
+    else
+        echo -e "${ERROR_X} ${RED}Error: Failed to copy schema files.${NC}"
+        exit 1
+    fi
+}
+
+check_status() {
+    print_header
+    if [ -d "$DEST_DIR/docs/schema" ]; then
+        echo -e "${CHECK_MARK} ${GREEN}BackendBot schemas are ${BOLD}INSTALLED${NC} in this project.${NC}"
+        echo -e "  ${FOLDER} Location:   ${CYAN}$DEST_DIR/docs/schema${NC}"
+        echo -e "  ${ARROW} File Count: ${BOLD}$(ls "$DEST_DIR/docs/schema" | wc -l)${NC} documentation specifications"
+    else
+        echo -e "${ERROR_X} ${RED}BackendBot schemas are ${BOLD}NOT${NC} installed in this project.${NC}"
+        echo -e "👉 Run ${GREEN}backendbot init${NC} inside this directory to integrate them."
+    fi
+}
+
+# Command dispatcher
+case "$1" in
+    init)
+        init_schemas
+        ;;
+    status)
+        check_status
+        ;;
+    help|--help|-h)
+        show_help
+        ;;
+    "")
+        # Interactive default behavior: check if already installed, otherwise run init
+        if [ -d "$DEST_DIR/docs/schema" ]; then
+            check_status
+        else
+            init_schemas
+        fi
+        ;;
+    *)
+        echo -e "${RED}Unknown command: $1${NC}"
+        show_help
+        exit 1
+        ;;
+esac
