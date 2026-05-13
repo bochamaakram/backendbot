@@ -1,0 +1,22 @@
+{
+  "name": "backendbot",
+  "version": "1.0.0",
+  "description": "Architect schema templates for backend development",
+  "main": "bin/backendbot",
+  "bin": {
+    "backendbot": "./bin/backendbot"
+  },
+  "scripts": {
+    "install-global": "npm link"
+  },
+  "keywords": [
+    "schema",
+    "architecture",
+    "express",
+    "prisma",
+    "clerk",
+    "blueprint"
+  ],
+  "author": "",
+  "license": "ISC"
+}

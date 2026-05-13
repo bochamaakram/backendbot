@@ -2,13 +2,23 @@
 
 > **Single Source of Truth for Back Office API Architectures.**
 
-BackendBot is a schema-driven blueprint repository designed to define, structure, and document Back Office Express/TypeScript APIs. It includes an integrated **portable CLI tool** that allows developers to easily copy and synchronize these architectural standards into any target repository on their local system.
+BackendBot is an industry-grade, schema-driven blueprint repository designed to define, structure, and document Back Office Express/TypeScript APIs. It features an integrated, cross-platform **Node.js CLI tool** that enables developers to instantly inject and synchronize these strict architectural standards into any backend repository on their local system.
+
+---
+
+## 💎 Features at a Glance
+
+- 🚀 **Zero-Config Seed**: Initialize standard backend blueprints in seconds.
+- 🔄 **Local Sync Engine**: Symlinked or globally registered via Node (`npm link`) for instant blueprint updates.
+- 🛡️ **Overwrite Protection**: Interactive CLI guards prevent accidental data loss in target projects.
+- 🤖 **AI-Agent Ready**: Immutable guidelines structured specifically for AI-assisted development tools (like Gemini, Cursor, etc.).
+- 📐 **Comprehensive Standard**: Includes 19 rigorous, production-tested blueprint files.
 
 ---
 
 ## 🚀 Quick Start for Developers
 
-Anyone can copy and use these blueprints in their own projects with just a few simple terminal commands.
+You can register and use these blueprints in your own projects with just a few terminal commands.
 
 ### 1. Clone the Repository
 Clone this repository to any location on your local machine:
@@ -18,61 +28,92 @@ cd backendbot
 ```
 
 ### 2. Install the Global CLI Command
-Run the universal installer script:
+Register the global `backendbot` command on **any** operating system (Windows, macOS, or Linux) using your terminal:
+
 ```bash
-./install.sh
+npm link
 ```
 
-This installer will:
-1. Make the CLI engine executable.
-2. Automatically create a global symbolic link inside your local user path (`~/.local/bin/backendbot`) pointing directly to your local clone.
+- **On Windows**: Run the command in PowerShell or Command Prompt. NPM will configure natively compatible executable wrappers (`backendbot.cmd` / `backendbot.ps1`).
+- **On macOS / Linux**: Run `npm link` (or use `./install.sh` as a shell helper).
+
+> [!NOTE]
+> Both methods dynamically symlink the executable, meaning any schema updates pulled via `git pull` are instantly active without needing reinstallations.
 
 ---
 
-## 🛠️ Usage inside Target Projects
+## 🛠️ CLI Command Reference
 
-Once installed, you can use the command from inside **any** backend project directory on your machine.
+Once installed, use the command from inside **any** backend project directory on your machine.
 
-### Seed Architectural Schemas
-To inject the full standardized `docs/schema/` structure into your active project, navigate to the project directory and run:
+### `backendbot init`
+To inject the full standardized `docs/schema/` structure into your active project, navigate to the target project directory and run:
 ```bash
 backendbot init
 ```
 *(Or simply type `backendbot` with no arguments, and the CLI will guide you dynamically!)*
 
-### Check Sync Status
+### `backendbot status`
 To verify if schemas are currently integrated and see the file count inside your active project, run:
 ```bash
 backendbot status
 ```
 
----
-
-## 🛡️ Key CLI Features
-
-* **Dynamic Path Resolution**: The command resolves its origin folder relative to where it resides, making it completely location-independent.
-* **Smart Override Safeguards**: To prevent accidental data loss, the CLI prompts for confirmation before overwriting any pre-existing schemas.
-* **Up-to-Date Blueprints**: Since the command is symlinked, any `git pull` updates you pull down into this repository are reflected immediately across all projects next time you run `backendbot init`—no reinstallation required!
+### `backendbot help`
+To print interactive help guidelines and command details, run:
+```bash
+backendbot help
+```
 
 ---
 
-## 📂 Architecture Schemas Included
+## 🛡️ Overwrite Protection & Safeguards
 
-Upon initialization, the CLI creates a `docs/schema/` directory containing the following:
+To prevent accidental data loss, the CLI prompts for confirmation before overwriting any pre-existing schemas:
 
-| Core Blueprint File | Domain | Purpose |
+```text
+⚠️  Warning: 'docs/schema' already exists in this project.
+👉 Do you want to overwrite existing schema files? (y/N) 
+```
+
+- **Dynamic Path Resolution**: The CLI command resolves its origin folder relative to where the binary resides, making it fully location-independent on your filesystem.
+- **Smart Symlinks**: Since the executable is symlinked, any `git pull` updates pulled down into the `backendbot` repository are reflected immediately across all target projects on the next run!
+
+---
+
+## 📂 Production-Ready Blueprints (19 Specifications)
+
+Upon initialization, the CLI creates a `docs/schema/` directory containing the following comprehensive architectural specifications:
+
+| Blueprint Specification | Domain | Purpose & Scope |
 | :--- | :--- | :--- |
-| `_overview.md` | Meta | High-level request lifecycle & file index |
-| `_conventions.md` | Meta | Directory layout, styling, and coding practices |
-| `_database.md` | Data | Prisma schemas, migration, and seeding patterns |
-| `_authentication.md` | Auth | Clerk integration & database syncing webhook |
-| `_authorization.md` | Auth | Role-Based Access Control (RBAC) schemas |
-| `_error_handling.md` | Core | Standardized taxonomy and error contract |
-| `_validation.md` | Core | Zod request/response validation patterns |
-| ... | *and 12 more* | *Detailed coverage of CORS, Logging, Pagination, etc.* |
+| [`_overview.md`](file:///home/akram/Desktop/personal/backendbot/docs/schema/_overview.md) | **Meta** | High-level request lifecycle, folder structures, and file indexes |
+| [`_conventions.md`](file:///home/akram/Desktop/personal/backendbot/docs/schema/_conventions.md) | **Meta** | Strict naming conventions, import sorting, ESLint/TS configs, and commit rules |
+| [`_database.md`](file:///home/akram/Desktop/personal/backendbot/docs/schema/_database.md) | **Data** | Prisma ORM schemas, migration guides, and data seeding patterns |
+| [`_authentication.md`](file:///home/akram/Desktop/personal/backendbot/docs/schema/_authentication.md) | **Auth** | Clerk token verification, real-time webhooks, and local database sync |
+| [`_authorization.md`](file:///home/akram/Desktop/personal/backendbot/docs/schema/_authorization.md) | **Auth** | Role-Based Access Control (RBAC), guards, and custom token claims |
+| [`_error_handling.md`](file:///home/akram/Desktop/personal/backendbot/docs/schema/_error_handling.md) | **Core** | Standardized custom error hierarchy, mapper helpers, and global middleware |
+| [`_validation.md`](file:///home/akram/Desktop/personal/backendbot/docs/schema/_validation.md) | **Core** | Type-safe body/query request validation patterns with Zod |
+| [`_api_response.md`](file:///home/akram/Desktop/personal/backendbot/docs/schema/_api_response.md) | **Core** | Standardized JSON envelope contract for successes, errors, and paginated lists |
+| [`_audit.md`](file:///home/akram/Desktop/personal/backendbot/docs/schema/_audit.md) | **Core** | Relational append-only mutations auditing and secure service logging |
+| [`_environment.md`](file:///home/akram/Desktop/personal/backendbot/docs/schema/_environment.md) | **Core** | Strict type-safe environment variable assertions using schema checkers |
+| [`_file_upload.md`](file:///home/akram/Desktop/personal/backendbot/docs/schema/_file_upload.md) | **Core** | Streamlined file-handling, multer constraints, and database record mappings |
+| [`_logging.md`](file:///home/akram/Desktop/personal/backendbot/docs/schema/_logging.md) | **Core** | Multi-transport logging patterns (Winston) and request context injection |
+| [`_middleware.md`](file:///home/akram/Desktop/personal/backendbot/docs/schema/_middleware.md) | **Core** | Request-ID correlation, CORS rules, and secure HTTP headers |
+| [`_modules.md`](file:///home/akram/Desktop/personal/backendbot/docs/schema/_modules.md) | **Core** | Scalable route/controller/service/repository domain scaffold guidelines |
+| [`_pagination.md`](file:///home/akram/Desktop/personal/backendbot/docs/schema/_pagination.md) | **Core** | Standardized cursor and limit-offset parameter contracts |
+| [`_rate_limiting.md`](file:///home/akram/Desktop/personal/backendbot/docs/schema/_rate_limiting.md) | **Core** | Security rate limits using memory and Redis store fallback plans |
+| [`_security.md`](file:///home/akram/Desktop/personal/backendbot/docs/schema/_security.md) | **Core** | OWASP API guidelines, helmet rules, and data sanitize checks |
+| [`_testing.md`](file:///home/akram/Desktop/personal/backendbot/docs/schema/_testing.md) | **Core** | Integration testing setups, service mocks, and unit coverage guidelines |
+| [`_deployment.md`](file:///home/akram/Desktop/personal/backendbot/docs/schema/_deployment.md) | **DevOps** | Production Docker configuration and standardized health check metrics |
 
 ---
 
-## 🤖 AI Agent Compatibility
-These schemas are explicitly designed to act as **immutable instructions** for AI-assisted development tools. Simply instruct your AI agent:
-> *"Before starting, read `docs/schema/_overview.md` and adhere to all architectural structures, boundaries, and validation conventions defined there."*
+## 🤖 AI Agent Integration
+
+These blueprints are explicitly designed to serve as **immutable rules** for AI-assisted development (such as Gemini, Claude, ChatGPT, or Cursor). 
+
+Before generating code inside your project, simply instruct your AI assistant:
+
+> 💡 *"Before starting, read `docs/schema/_overview.md` and adhere to all architectural boundaries, code conventions, schemas, and API response rules defined in `docs/schema/`."*
+

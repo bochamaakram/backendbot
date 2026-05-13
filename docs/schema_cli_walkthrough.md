@@ -6,7 +6,10 @@ This guide will walk you through how to use the custom `backendbot` command line
 
 ## 🧭 Overview of the Command
 
-The custom `backendbot` CLI command resides at [backendbot](file:///home/akram/.local/bin/backendbot) and is connected directly to your source schemas inside [backendbot/docs/schema](file:///home/akram/Desktop/personal/backendbot/docs/schema). 
+The custom `backendbot` CLI is a cross-platform Node.js utility. 
+
+* On **Windows**, it is linked into your standard global npm binary path.
+* On **Unix/macOS**, it can be linked globally via Node or symlinked directly to your local user path (`~/.local/bin/backendbot`).
 
 When run inside any target directory, it automatically initializes a `docs/schema/` structure filled with your immutable backend specifications.
 
@@ -14,11 +17,13 @@ When run inside any target directory, it automatically initializes a `docs/schem
 
 ## ⚡ Step-by-Step Guide
 
-### Step 1: Ensure Your Terminal Session is Refreshed
-Because the command was recently added to your `~/.local/bin` directory, make sure your shell path is active. If you are in an existing terminal window, either restart it or run:
+### Step 1: Install the CLI (One-time Setup)
+Navigate to your cloned repository and link the executable globally:
 ```bash
-source ~/.zshrc
+npm link
 ```
+This single command registers the `backendbot` command globally across all terminal sessions on Windows, macOS, and Linux!
+
 
 ### Step 2: Navigate to Your Target Project
 Navigate to any backend repository where you want to add the Back Office database, auth, error-handling, or validation rules. For example:
