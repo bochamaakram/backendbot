@@ -13,7 +13,7 @@ Anyone can copy and use these blueprints in their own projects with just a few s
 ### 1. Clone the Repository
 Clone this repository to any location on your local machine:
 ```bash
-git clone https://github.com/your-username/backendbot.git
+git clone https://github.com/bochamaakram/backendbot.git
 cd backendbot
 ```
 
