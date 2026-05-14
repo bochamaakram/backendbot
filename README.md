@@ -17,31 +17,13 @@ BackendBot is an industry-grade, schema-driven blueprint repository designed to 
 
 ## Quick Start for Developers
 
-You can clone and sync these blueprints to your local project directory (`.backend-blueprints`) with a single terminal command or via npm.
+You can clone and sync these blueprints to your local project directory (`.backend-blueprints`) with a single terminal command.
 
-### Installation via NPM (npx)
-Using `npx` is the easiest way to pull the blueprints into your project:
-```bash
-npx backendbot init
-```
-
-### Installation via Bash
-Alternatively, run this command inside your backend project folder:
+### Installation 
+Run this command inside your backend project folder to install or update the standard project instructions:
 ```bash
 curl -sSL https://raw.githubusercontent.com/bochamaakram/backendbot/main/install.sh | bash
 ```
-
-### Docker Setup
-To instantly bootstrap a production-ready Docker configuration based on the Deployment Blueprint, run:
-```bash
-npx backendbot docker
-```
-You can also explicitly choose your ORM (defaults to Prisma):
-```bash
-npx backendbot docker prisma
-npx backendbot docker drizzle
-```
-This will generate a multi-stage `Dockerfile` (tailored to your chosen ORM) and a `docker-compose.yml` pre-configured for Node.js and PostgreSQL in your current directory.
 
 ---
 
