@@ -36,6 +36,9 @@ const storage = multer.diskStorage({
 });
 
 const fileFilter: multer.Options['fileFilter'] = (_req, file, cb) => {
+  // NOTE: This basic check relies on the client's Content-Type header.
+  // It MUST be supplemented by a subsequent magic-bytes validation (e.g., using `file-type`)
+  // after the file buffer is received or saved, to prevent malicious file uploads (e.g., .php masked as .jpg).
   const allowed = config.UPLOAD_ALLOWED_TYPES.split(',');
   const isAllowed = allowed.some((type) => {
     if (type.endsWith('/*')) {
@@ -92,7 +95,7 @@ model File {
 ## 4. Rules
 
 1. **Never** trust the original filename — generate UUID-based names.
-2. **Always** validate MIME type server-side — never rely on file extension.
+2. **Always** validate MIME type server-side using **magic-bytes** inspection (e.g., using a library like `file-type`). **Never** rely on the file extension or the `Content-Type` header provided by the client. The system must actively detect and reject malicious files masked with safe extensions (e.g., a PHP script masked as a `.jpg`).
 3. **Never** serve uploaded files from the application directly — use a static file server or CDN.
 4. Store file metadata in the database, not just the filesystem.
 5. Implement cleanup for orphaned files (uploaded but not linked to any entity).

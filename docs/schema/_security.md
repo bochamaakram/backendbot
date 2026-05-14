@@ -70,14 +70,22 @@ See `_authentication.md` for full details. Key points:
 
 - Authentication is **fully delegated to Clerk** — no in-house auth.
 - Clerk handles JWT issuance, session management, MFA, OAuth/SSO.
-- Backend verifies Clerk JWTs via `@clerk/express` SDK (JWKS-based).
-- No passwords stored in our database — Clerk manages credentials.
+- Backend **MUST** verify Clerk JWTs via `@clerk/express` SDK (JWKS-based) for all protected routes. Bypassing routes without a valid Clerk session token must be strictly blocked.
+- The database **MUST NEVER** store passwords — Clerk manages credentials.
 - User data synced from Clerk to local DB via middleware and webhooks.
 - Webhook signatures verified using `svix`.
 
 ---
 
-## 5. Data Protection
+## 5. Server-Side Request Forgery (SSRF) Prevention
+
+- **All** outbound webhook or fetch calls **MUST** be tested and validated against SSRF.
+- The backend **MUST** implement and use a `validateOutboundURL()` helper before making any external HTTP request.
+- The system **MUST strictly block** any URLs resolving to private IPs, loopback, or local services (e.g., `127.0.0.1`, `169.254.169.254`, `10.x.x.x`, `192.168.x.x`, `localhost`).
+
+---
+
+## 6. Data Protection
 
 | Practice | Implementation |
 |----------|---------------|
@@ -89,7 +97,7 @@ See `_authentication.md` for full details. Key points:
 
 ---
 
-## 6. Dependency Security
+## 7. Dependency Security
 
 - Run `npm audit` in CI pipeline — fail on **high** or **critical** vulnerabilities.
 - Pin major versions of all dependencies.
@@ -98,12 +106,14 @@ See `_authentication.md` for full details. Key points:
 
 ---
 
-## 7. Security Checklist
+## 8. Security Checklist
 
 - [ ] Helmet enabled with strict CSP
 - [ ] CORS configured with explicit origins (no `*` in production)
 - [ ] Rate limiting on all endpoints
-- [ ] Clerk authentication configured with `@clerk/express`
+- [ ] Clerk authentication configured strictly with `@clerk/express`
+- [ ] SSRF protection enabled (`validateOutboundURL()` implemented for all outbound requests)
+- [ ] Outbound requests to private/local IPs strictly blocked
 - [ ] Clerk webhook endpoint secured with `svix` signature verification
 - [ ] No passwords stored in application database
 - [ ] `CLERK_SECRET_KEY` never exposed to frontend
@@ -115,7 +125,7 @@ See `_authentication.md` for full details. Key points:
 
 ---
 
-## 8. Rules
+## 9. Rules
 
 1. **Never** disable Helmet in production.
 2. **Never** use `CORS_ORIGINS=*` in production.
@@ -123,4 +133,5 @@ See `_authentication.md` for full details. Key points:
 4. **Never** expose stack traces in production responses.
 5. **Always** validate and sanitize input at the edge.
 6. **Always** use parameterized queries (Prisma handles this).
-7. Run security audits as part of CI — not optional.
+7. **Always** validate outbound URLs against SSRF (block private IPs).
+8. Run security audits as part of CI — not optional.

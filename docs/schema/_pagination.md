@@ -9,8 +9,8 @@
 
 | Aspect | Decision |
 |--------|----------|
-| Default method | **Offset-based** (page + limit) |
-| Optional | Cursor-based for real-time feeds |
+| Default method | **Offset-based** (page + limit) for low-volume views |
+| Mandatory | **Cursor-based** for real-time feeds and large datasets to prevent deep offset DoS attacks |
 | Max page size | `100` items |
 | Default page size | `20` items |
 
@@ -95,8 +95,8 @@ export const paginationQuery = z.object({
 
 ## 6. Rules
 
-1. **Always** use `Promise.all` for parallel count + data queries.
-2. **Never** allow `limit` > 100 — enforce in validation.
+1. **Always** use `Promise.all` for parallel count + data queries when using offset pagination.
+2. **Never** allow `limit` > 100 — enforce strictly in Zod validation.
 3. Return **full pagination metadata** — clients should never need to calculate.
 4. Default sort is `createdAt desc` (newest first).
-5. Use cursor-based pagination only when explicitly needed (infinite scroll, real-time).
+5. **Enforce** cursor-based pagination for large datasets and public data feeds. Deep offset pagination (e.g., `page=100000`) is a known DoS attack vector against databases and MUST be prevented for large collections.
