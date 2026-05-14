@@ -12,15 +12,15 @@ if ! command -v git &> /dev/null; then
     exit 1
 fi
 
-# 2. Clone or Update the files
+# 2. Clone or Update the files (Only docs folder)
 if [ -d "$DEST_DIR" ]; then
     echo "Updating existing files..."
     cd "$DEST_DIR" && git pull
 else
     echo "Cloning repository to $DEST_DIR..."
-    git clone "$REPO_URL" "$DEST_DIR"
+    git clone --filter=blob:none --sparse "$REPO_URL" "$DEST_DIR"
+    cd "$DEST_DIR"
+    git sparse-checkout set docs
 fi
 
-chmod +x "$DEST_DIR/init-script.sh"
-
-echo "✅ Setup complete! You can now use the project instructions."
+echo "✅ Setup complete! The blueprints are available in $DEST_DIR/docs/schema"
