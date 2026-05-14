@@ -11,25 +11,41 @@ BackendBot is an industry-grade, schema-driven blueprint repository designed to 
 - **Standardized Blueprints**: Access standard backend blueprints for any project.
 - **Local Sync Engine**: Easily clone or update the blueprints on your machine using the installation script.
 - **AI-Agent Ready**: Immutable guidelines structured specifically for AI-assisted development tools (like Gemini, Cursor, etc.).
-- **Comprehensive Standard**: Includes 19 rigorous, production-tested blueprint files.
+- **Comprehensive Standard**: Includes 21 rigorous, production-tested blueprint files.
 
 ---
 
 ## Quick Start for Developers
 
-You can clone and sync these blueprints to your local project directory (`.backend-blueprints`) with a single terminal command.
+You can clone and sync these blueprints to your local project directory (`.backend-blueprints`) with a single terminal command or via npm.
 
-### Installation / Update
-Run this command inside your backend project folder to install or update the standard project instructions:
+### Installation via NPM (npx)
+Using `npx` is the easiest way to pull the blueprints into your project:
+```bash
+npx backendbot init
+```
+
+### Installation via Bash
+Alternatively, run this command inside your backend project folder:
 ```bash
 curl -sSL https://raw.githubusercontent.com/bochamaakram/backendbot/main/install.sh | bash
 ```
 
-This will clone or pull the latest changes from the repository into your local `.backend-blueprints` directory, making them easily accessible for your AI agents for the current project.
+### Docker Setup
+To instantly bootstrap a production-ready Docker configuration based on the Deployment Blueprint, run:
+```bash
+npx backendbot docker
+```
+You can also explicitly choose your ORM (defaults to Prisma):
+```bash
+npx backendbot docker prisma
+npx backendbot docker drizzle
+```
+This will generate a multi-stage `Dockerfile` (tailored to your chosen ORM) and a `docker-compose.yml` pre-configured for Node.js and PostgreSQL in your current directory.
 
 ---
 
-## Production-Ready Blueprints (19 Specifications)
+## Production-Ready Blueprints (21 Specifications)
 
 The repository contains the following comprehensive architectural specifications in the `docs/schema/` directory:
 
@@ -52,6 +68,8 @@ The repository contains the following comprehensive architectural specifications
 | `_pagination.md` | **Core** | Standardized cursor and limit-offset parameter contracts |
 | `_rate_limiting.md` | **Core** | Security rate limits using memory and Redis store fallback plans |
 | `_security.md` | **Core** | OWASP API guidelines, helmet rules, and data sanitize checks |
+| `_seo.md` | **Core** | Standardized SEO metadata, JSON-LD generation, sitemaps, and robots directives |
+| `_geo.md` | **Core** | Generative Engine Optimization (GEO) rules for AI search citations |
 | `_testing.md` | **Core** | Integration testing setups, service mocks, and unit coverage guidelines |
 | `_deployment.md` | **DevOps** | Production Docker configuration and standardized health check metrics |
 
