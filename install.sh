@@ -12,15 +12,22 @@ if ! command -v git &> /dev/null; then
     exit 1
 fi
 
-# 2. Clone or Update the files
-if [ -d "$DEST_DIR" ]; then
-    echo "Updating existing files..."
-    cd "$DEST_DIR" && git pull
+# 2. Clone to temporary directory and move docs
+echo "Fetching latest blueprints..."
+TEMP_DIR=$(mktemp -d)
+
+if git clone --depth 1 "$REPO_URL" "$TEMP_DIR" &> /dev/null; then
+    mkdir -p "$DEST_DIR"
+    # Remove old docs if they exist and copy new ones
+    rm -rf "$DEST_DIR/docs"
+    cp -r "$TEMP_DIR/docs" "$DEST_DIR/"
+    
+    # Cleanup temp
+    rm -rf "$TEMP_DIR"
+    
+    echo "✅ Setup complete! The blueprints are available in $DEST_DIR/docs/schema"
 else
-    echo "Cloning repository to $DEST_DIR..."
-    git clone "$REPO_URL" "$DEST_DIR"
+    echo "❌ Error: Failed to clone repository."
+    rm -rf "$TEMP_DIR"
+    exit 1
 fi
-
-chmod +x "$DEST_DIR/init-script.sh"
-
-echo "✅ Setup complete! You can now use the project instructions."

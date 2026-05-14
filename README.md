@@ -81,5 +81,5 @@ These blueprints are explicitly designed to serve as **immutable rules** for AI-
 
 Before generating code inside your project, simply instruct your AI assistant:
 
-> *"Before starting, read `.project-agents/docs/schema/_overview.md` and adhere to all architectural boundaries, code conventions, schemas, and API response rules defined in `.project-agents/docs/schema/`."*
+> *"Before starting, read `.backend-blueprints/docs/schema/_overview.md` and adhere to all architectural boundaries, code conventions, schemas, and API response rules defined in `.backend-blueprints/docs/schema/`."*
 
