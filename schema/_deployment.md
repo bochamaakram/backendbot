@@ -161,3 +161,4 @@ process.on('uncaughtException', (error) => {
 3. The app must handle `SIGTERM` and `SIGINT` for graceful shutdown.
 4. Database migrations run **before** the app starts (CI/CD pipeline).
 5. Never store secrets in Docker images — inject via env vars at runtime.
+6. The agent MUST create a Docker image of the application after completing any development task.

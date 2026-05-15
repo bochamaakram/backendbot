@@ -8,7 +8,7 @@
 
 ## 1. Purpose
 
-This directory (`/docs/schema/`) is the **single, authoritative blueprint** for every layer of the Back Office API. Any code-generation agent, developer, or CI pipeline **MUST** treat these files as immutable specifications unless a human maintainer explicitly revises them.
+This directory (`/schema/`) is the **single, authoritative blueprint** for every layer of the Back Office API. Any code-generation agent, developer, or CI pipeline **MUST** treat these files as immutable specifications unless a human maintainer explicitly revises them.
 
 ---
 
@@ -30,6 +30,7 @@ This directory (`/docs/schema/`) is the **single, authoritative blueprint** for 
 | File | Domain | Description |
 |------|--------|-------------|
 | [`_overview.md`](./_overview.md) | Meta | This file — architecture overview & file index |
+| [`_filestructure.md`](./_filestructure.md) | Meta | Standardized high-level project file structure |
 | [`_conventions.md`](./_conventions.md) | Meta | Naming, coding style, folder layout conventions |
 | [`_environment.md`](./_environment.md) | Config | Environment variables & configuration management |
 | [`_authentication.md`](./_authentication.md) | Auth | Clerk integration, user sync, webhook handling |
@@ -121,57 +122,7 @@ Request
 
 ---
 
-## 6. Folder Structure
-
-```
-backendbot/
-├── docs/
-│   └── schema/              # ← YOU ARE HERE — Source of Truth
-├── prisma/
-│   ├── schema.prisma
-│   ├── migrations/
-│   └── seed.ts
-├── src/
-│   ├── app.ts               # Express app factory
-│   ├── server.ts            # Entry point — bootstraps app
-│   ├── config/
-│   │   ├── index.ts         # Validated env config (single export)
-│   │   ├── database.ts      # Prisma client singleton
-│   │   └── logger.ts        # Winston / Pino configuration
-│   ├── common/
-│   │   ├── middleware/       # Global middleware
-│   │   ├── guards/          # Auth & permission guards
-│   │   ├── validators/      # Shared Zod schemas
-│   │   ├── utils/           # Pure utility functions
-│   │   ├── types/           # Shared TypeScript types & interfaces
-│   │   ├── errors/          # Custom error classes
-│   │   ├── constants/       # Application-wide constants
-│   │   └── decorators/      # Custom decorators (if needed)
-│   ├── modules/
-│   │   ├── webhook/
-│   │   │   └── clerk-webhook.routes.ts   # Clerk webhook handler
-│   │   ├── user/
-│   │   │   ├── user.routes.ts
-│   │   │   ├── user.controller.ts
-│   │   │   ├── user.service.ts
-│   │   │   ├── user.repository.ts
-│   │   │   ├── user.validator.ts
-│   │   │   ├── user.types.ts
-│   │   │   └── __tests__/
-│   │   └── [module-name]/   # Same pattern for every module
-│   └── __tests__/           # Integration / E2E tests
-├── .env.example
-├── .gitignore
-├── docker-compose.yml
-├── Dockerfile
-├── tsconfig.json
-├── package.json
-└── README.md
-```
-
----
-
-## 7. Agent Instructions
+## 6. Agent Instructions
 
 > **IMPORTANT — Read Before Generating Code**
 
@@ -185,12 +136,15 @@ backendbot/
 8. Every route **must** have validation, auth, and permission guards unless explicitly annotated `@public`.
 9. **Authentication is handled by Clerk** — never implement custom login/signup/password endpoints.
 10. All protected routes must use `authGuard` (Clerk's `requireAuth()`) + `syncUserMiddleware` + `requirePermission()`.
+11. **Post-Task Completion**: After finishing the requested task, the agent MUST create a Docker image of the application to ensure it is ready for deployment.
 
 ---
 
-## 8. Version History
+## 7. Version History
 
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|
 | 1.0.0 | 2026-05-13 | Architect | Initial schema creation |
 | 1.1.0 | 2026-05-13 | Architect | Migrated auth from in-house JWT to Clerk |
+| 1.2.0 | 2026-05-15 | Architect | Added mandatory Docker image creation after task completion |
+| 1.3.0 | 2026-05-15 | Architect | Added _filestructure.md and updated directory references |

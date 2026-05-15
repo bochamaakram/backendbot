@@ -17,41 +17,27 @@ BackendBot is an industry-grade, schema-driven blueprint repository designed to 
 
 ## Quick Start for Developers
 
-You can clone and sync these blueprints to your local project directory (`.backend-blueprints`) with a single terminal command or via npm.
+You can clone and sync these blueprints to your local project directory (`.backend-blueprints`) with a single terminal command.
 
-### Installation via NPM (npx)
-Using `npx` is the easiest way to pull the blueprints into your project:
-```bash
-npx backendbot init
-```
-
-### Installation via Bash
-Alternatively, run this command inside your backend project folder:
+### Installation 
+Run this command inside your backend project folder to install or update the standard project instructions:
 ```bash
 curl -sSL https://raw.githubusercontent.com/bochamaakram/backendbot/main/install.sh | bash
 ```
-
-### Docker Setup
-To instantly bootstrap a production-ready Docker configuration based on the Deployment Blueprint, run:
-```bash
-npx backendbot docker
-```
-You can also explicitly choose your ORM (defaults to Prisma):
-```bash
-npx backendbot docker prisma
-npx backendbot docker drizzle
-```
-This will generate a multi-stage `Dockerfile` (tailored to your chosen ORM) and a `docker-compose.yml` pre-configured for Node.js and PostgreSQL in your current directory.
+after installation prompt the ai agent 
+>"Before starting, read `.backend-blueprints/schema/_overview.md` and adhere to all architectural boundaries, code conventions, schemas, and API response rules defined in `.backend-blueprints/schema/`."
+>""
 
 ---
 
 ## Production-Ready Blueprints (21 Specifications)
 
-The repository contains the following comprehensive architectural specifications in the `docs/schema/` directory:
+The repository contains the following comprehensive architectural specifications in the `schema/` directory:
 
 | Blueprint Specification | Domain | Purpose & Scope |
 | :--- | :--- | :--- |
 | `_overview.md` | **Meta** | High-level request lifecycle, folder structures, and file indexes |
+| `_filestructure.md` | **Meta** | Standardized high-level project file structure |
 | `_conventions.md` | **Meta** | Strict naming conventions, import sorting, ESLint/TS configs, and commit rules |
 | `_database.md` | **Data** | Prisma ORM schemas, migration guides, and data seeding patterns |
 | `_authentication.md` | **Auth** | Clerk token verification, real-time webhooks, and local database sync |
@@ -81,5 +67,5 @@ These blueprints are explicitly designed to serve as **immutable rules** for AI-
 
 Before generating code inside your project, simply instruct your AI assistant:
 
-> *"Before starting, read `.backend-blueprints/docs/schema/_overview.md` and adhere to all architectural boundaries, code conventions, schemas, and API response rules defined in `.backend-blueprints/docs/schema/`."*
+> *"Before starting, read `.backend-blueprints/schema/_overview.md` and adhere to all architectural boundaries, code conventions, schemas, and API response rules defined in `.backend-blueprints/schema/`."*
 
