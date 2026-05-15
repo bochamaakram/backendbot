@@ -24,16 +24,20 @@ Run this command inside your backend project folder to install or update the sta
 ```bash
 curl -sSL https://raw.githubusercontent.com/bochamaakram/backendbot/main/install.sh | bash
 ```
+after installation prompt the ai agent 
+>"Before starting, read `.backend-blueprints/schema/_overview.md` and adhere to all architectural boundaries, code conventions, schemas, and API response rules defined in `.backend-blueprints/schema/`."
+>""
 
 ---
 
 ## Production-Ready Blueprints (21 Specifications)
 
-The repository contains the following comprehensive architectural specifications in the `docs/schema/` directory:
+The repository contains the following comprehensive architectural specifications in the `schema/` directory:
 
 | Blueprint Specification | Domain | Purpose & Scope |
 | :--- | :--- | :--- |
 | `_overview.md` | **Meta** | High-level request lifecycle, folder structures, and file indexes |
+| `_filestructure.md` | **Meta** | Standardized high-level project file structure |
 | `_conventions.md` | **Meta** | Strict naming conventions, import sorting, ESLint/TS configs, and commit rules |
 | `_database.md` | **Data** | Prisma ORM schemas, migration guides, and data seeding patterns |
 | `_authentication.md` | **Auth** | Clerk token verification, real-time webhooks, and local database sync |
@@ -63,5 +67,5 @@ These blueprints are explicitly designed to serve as **immutable rules** for AI-
 
 Before generating code inside your project, simply instruct your AI assistant:
 
-> *"Before starting, read `.backend-blueprints/docs/schema/_overview.md` and adhere to all architectural boundaries, code conventions, schemas, and API response rules defined in `.backend-blueprints/docs/schema/`."*
+> *"Before starting, read `.backend-blueprints/schema/_overview.md` and adhere to all architectural boundaries, code conventions, schemas, and API response rules defined in `.backend-blueprints/schema/`."*
 

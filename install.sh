@@ -18,14 +18,14 @@ TEMP_DIR=$(mktemp -d)
 
 if git clone --depth 1 "$REPO_URL" "$TEMP_DIR" &> /dev/null; then
     mkdir -p "$DEST_DIR"
-    # Remove old docs if they exist and copy new ones
-    rm -rf "$DEST_DIR/docs"
-    cp -r "$TEMP_DIR/docs" "$DEST_DIR/"
+    # Remove old schema if it exists and copy new one
+    rm -rf "$DEST_DIR/schema"
+    cp -r "$TEMP_DIR/schema" "$DEST_DIR/"
     
     # Cleanup temp
     rm -rf "$TEMP_DIR"
     
-    echo "✅ Setup complete! The blueprints are available in $DEST_DIR/docs/schema"
+    echo "✅ Setup complete! The blueprints are available in $DEST_DIR/schema"
 else
     echo "❌ Error: Failed to clone repository."
     rm -rf "$TEMP_DIR"
