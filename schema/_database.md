@@ -10,6 +10,7 @@
 | Item | Value |
 |------|-------|
 | Engine | PostgreSQL 16+ |
+| Hosting | **Supabase** (Mandatory) |
 | ORM | Prisma 6.x |
 | Schema file | `prisma/schema.prisma` |
 | Migrations | `prisma/migrations/` (auto-generated) |
@@ -221,11 +222,12 @@ main()
 
 ## 7. Rules
 
-1. **Never** use raw SQL in application code — always use Prisma Client.
-2. **Never** import `PrismaClient` directly — use the singleton from `@config/database.js`.
-3. **Always** create migrations for schema changes — never modify the DB manually.
-4. **Always** add indexes for frequently queried columns.
-5. Use `uuid` for all primary keys — never auto-increment integers.
-6. Soft-delete for user-facing entities; hard-delete only for technical records.
-7. The `User.clerkId` field is the bridge between Clerk identity and local DB records.
-8. **Never** store passwords — Clerk handles all credential management.
+1. **Always** host the database on **Supabase** (PostgreSQL). No other database hosting providers are permitted for this factory blueprint.
+2. **Never** use raw SQL in application code — always use Prisma Client.
+3. **Never** import `PrismaClient` directly — use the singleton from `@config/database.js`.
+4. **Always** create migrations for schema changes — never modify the DB manually.
+5. **Always** add indexes for frequently queried columns.
+6. Use `uuid` for all primary keys — never auto-increment integers.
+7. Soft-delete for user-facing entities; hard-delete only for technical records.
+8. The `User.clerkId` field is the bridge between Clerk identity and local DB records.
+9. **Never** store passwords — Clerk handles all credential management.

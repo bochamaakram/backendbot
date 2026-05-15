@@ -1,0 +1,28 @@
+{
+  "name": "backendbot",
+  "version": "1.0.0",
+  "description": "Single Source of Truth for Back Office API Architectures.",
+  "main": "index.js",
+  "bin": {
+    "backendbot": "./bin/backendbot"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bochamaakram/backendbot.git"
+  },
+  "keywords": [
+    "blueprint",
+    "backend",
+    "express",
+    "typescript"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bochamaakram/backendbot/issues"
+  },
+  "homepage": "https://github.com/bochamaakram/backendbot#readme"
+}
