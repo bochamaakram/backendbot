@@ -10,7 +10,7 @@ echo "🚀 Welcome to the Standard Project Instructions Installer"
 echo ""
 
 # Ask for destination directory
-read -p "Enter destination directory [$DEFAULT_DEST]: " USER_DEST
+read -p "Enter destination directory [$DEFAULT_DEST]: " USER_DEST < /dev/tty
 DEST_DIR="${USER_DEST:-$DEFAULT_DEST}"
 
 echo ""
@@ -18,7 +18,7 @@ echo "This will install the standard project instructions (blueprints) into:"
 echo "📁 $DEST_DIR/schema"
 echo ""
 
-read -p "Do you want to proceed? [Y/n] " confirm
+read -p "Do you want to proceed? [Y/n] " confirm < /dev/tty
 if [[ "$confirm" =~ ^[nN] ]]; then
     echo "Installation cancelled."
     exit 0
