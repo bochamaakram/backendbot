@@ -1,9 +1,30 @@
 #!/bin/bash
 
-# Define the repository and destination
+# Define the repository
 REPO_URL="https://github.com/bochamaakram/backendbot.git"
-DEST_DIR="$PWD/.backend-blueprints" # this will be copied to your current folder
 
+# Default destination
+DEFAULT_DEST="$PWD/.backend-blueprints"
+
+echo "🚀 Welcome to the Standard Project Instructions Installer"
+echo ""
+
+# Ask for destination directory
+read -p "Enter destination directory [$DEFAULT_DEST]: " USER_DEST
+DEST_DIR="${USER_DEST:-$DEFAULT_DEST}"
+
+echo ""
+echo "This will install the standard project instructions (blueprints) into:"
+echo "📁 $DEST_DIR/schema"
+echo ""
+
+read -p "Do you want to proceed? [Y/n] " confirm
+if [[ "$confirm" =~ ^[nN] ]]; then
+    echo "Installation cancelled."
+    exit 0
+fi
+
+echo ""
 echo "🚀 Installing Standard Project Instructions..."
 
 # 1. Check if git is installed
