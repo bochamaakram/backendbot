@@ -1,0 +1,137 @@
+#!/usr/bin/env node
+
+const fs = require('fs');
+const path = require('path');
+const { execSync } = require('child_process');
+const readline = require('readline');
+
+const args = process.argv.slice(2);
+const command = args[0];
+
+const DEST_DIR = path.join(process.cwd(), '.backend-blueprints');
+const REPO_URL = 'https://github.com/bochamaakram/backendbot.git';
+
+if (command === 'init' || !command) {
+    console.log('🚀 Installing Standard Project Instructions...');
+    if (fs.existsSync(DEST_DIR)) {
+        console.log('Updating existing files...');
+        execSync('git pull', { cwd: DEST_DIR, stdio: 'inherit' });
+    } else {
+        console.log(`Cloning repository to ${DEST_DIR}...`);
+        execSync(`git clone ${REPO_URL} ${DEST_DIR}`, { stdio: 'inherit' });
+    }
+    console.log('✅ Setup complete!');
+} else if (command === 'docker') {
+    const generateDocker = (orm) => {
+        console.log(`🐳 Generating Docker files for ORM: ${orm}...`);
+        
+        let dockerfile = '';
+        if (orm === 'prisma') {
+            dockerfile = `# ── Build Stage ──
+FROM node:20-alpine AS builder
+WORKDIR /app
+COPY package*.json ./
+COPY prisma ./prisma/
+RUN npm ci
+COPY . .
+RUN npx prisma generate
+RUN npm run build
+
+# ── Production Stage ──
+FROM node:20-alpine AS production
+WORKDIR /app
+RUN addgroup -g 1001 -S appgroup && adduser -S appuser -u 1001
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/package*.json ./
+USER appuser
+EXPOSE 3000
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \\
+  CMD wget --no-verbose --tries=1 --spider http://localhost:3000/api/v1/health || exit 1
+CMD ["node", "dist/server.js"]
+`;
+        } else if (orm === 'drizzle') {
+            dockerfile = `# ── Build Stage ──
+FROM node:20-alpine AS builder
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY . .
+RUN npm run build
+
+# ── Production Stage ──
+FROM node:20-alpine AS production
+WORKDIR /app
+RUN addgroup -g 1001 -S appgroup && adduser -S appuser -u 1001
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package*.json ./
+USER appuser
+EXPOSE 3000
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \\
+  CMD wget --no-verbose --tries=1 --spider http://localhost:3000/api/v1/health || exit 1
+CMD ["node", "dist/server.js"]
+`;
+        }
+        
+        const dockerCompose = `services:
+  api:
+    build: .
+    ports:
+      - "\${PORT:-3000}:3000"
+    env_file: .env
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: \${DB_USER:-backoffice}
+      POSTGRES_PASSWORD: \${DB_PASSWORD:-password}
+      POSTGRES_DB: \${DB_NAME:-backoffice}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \${DB_USER:-backoffice}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pgdata:
+`;
+
+        fs.writeFileSync(path.join(process.cwd(), 'Dockerfile'), dockerfile);
+        fs.writeFileSync(path.join(process.cwd(), 'docker-compose.yml'), dockerCompose);
+        console.log('✅ Dockerfile and docker-compose.yml created successfully!');
+    };
+
+    let orm = args[1];
+    if (orm === 'prisma' || orm === 'drizzle') {
+        generateDocker(orm);
+    } else {
+        const rl = readline.createInterface({
+            input: process.stdin,
+            output: process.stdout
+        });
+        
+        rl.question('🐳 Which ORM would you like to use? (prisma/drizzle): ', (answer) => {
+            const selected = answer.trim().toLowerCase();
+            if (selected === 'prisma' || selected === 'drizzle') {
+                generateDocker(selected);
+            } else {
+                console.log('❌ Invalid ORM. Defaulting to prisma.');
+                generateDocker('prisma');
+            }
+            rl.close();
+        });
+    }
+} else {
+    console.log('❌ Unknown command. Available commands: init, docker [prisma|drizzle]');
+    process.exit(1);
+}
