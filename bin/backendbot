@@ -11,23 +11,203 @@ const command = args[0];
 const DEST_DIR = path.join(process.cwd(), '.backend-blueprints');
 const REPO_URL = 'https://github.com/bochamaakram/backendbot.git';
 
-if (command === 'init' || !command) {
-    console.log('🚀 Installing Standard Project Instructions...');
-    if (fs.existsSync(DEST_DIR)) {
-        console.log('Updating existing files...');
-        execSync('git pull', { cwd: DEST_DIR, stdio: 'inherit' });
-    } else {
-        console.log(`Cloning repository to ${DEST_DIR}...`);
-        execSync(`git clone ${REPO_URL} ${DEST_DIR}`, { stdio: 'inherit' });
+// Define files under each category
+const META_FILES = ["_overview.md", "_filestructure.md", "_conventions.md"];
+const DATABASE_FILES = ["_database.md"];
+const AUTH_FILES = ["_authentication.md", "_authorization.md", "_security.md", "_rate_limiting.md"];
+const CORE_FILES = [
+    "_modules.md",
+    "_error_handling.md",
+    "_validation.md",
+    "_api_response.md",
+    "_middleware.md",
+    "_logging.md",
+    "_pagination.md",
+    "_file_upload.md",
+    "_audit.md",
+    "_environment.md"
+];
+const DEVOPS_FILES = ["_testing.md", "_deployment.md"];
+const SEO_FILES = ["_seo.md", "_geo.md"];
+
+// Array of all files
+const ALL_FILES = [
+    ...META_FILES,
+    ...DATABASE_FILES,
+    ...AUTH_FILES,
+    ...CORE_FILES,
+    ...DEVOPS_FILES,
+    ...SEO_FILES
+];
+
+// Helper descriptions for the files
+const FILE_DESCS = {
+    "_overview.md": "High level lifecycle & file structure overview",
+    "_filestructure.md": "Standardized high-level folder structure",
+    "_conventions.md": "Naming conventions, TS configs, and commit rules",
+    "_database.md": "Prisma ORM schemas, migration & seeding patterns",
+    "_authentication.md": "Clerk verification & local DB synchronization",
+    "_authorization.md": "RBAC, API route guards, and custom token claims",
+    "_security.md": "OWASP security checklists & input sanitization",
+    "_rate_limiting.md": "Rate limiting parameters & Redis backup strategy",
+    "_modules.md": "Route, controller, service, repo scaffold guidelines",
+    "_error_handling.md": "Custom exception architecture & global middleware",
+    "_validation.md": "Type-safe request validation with Zod schemas",
+    "_api_response.md": "Standardized API envelopes for all response types",
+    "_middleware.md": "Correlation IDs, CORS, and default secure headers",
+    "_logging.md": "Winston custom transports & context log injection",
+    "_pagination.md": "Standardized cursor and offset pagination boundaries",
+    "_file_upload.md": "Multer validators & database record mappings",
+    "_audit.md": "Append-only relational mutations audit log schema",
+    "_environment.md": "Type-safe environment variable assertions on start",
+    "_testing.md": "Integration testing schemas & mocking conventions",
+    "_deployment.md": "Docker architectures & server health check standards",
+    "_seo.md": "Metadata, sitemaps, robots.txt, and JSON-LD rules",
+    "_geo.md": "AI search engine citation rules & GEO parameters"
+};
+
+const runInit = async () => {
+    console.log('\x1b[36m🚀 Starting Interactive Blueprint Installer...\x1b[0m');
+    
+    // 1. Check if git is installed
+    try {
+        execSync('git --version', { stdio: 'ignore' });
+    } catch (e) {
+        console.error('\x1b[31m❌ Error: git is not installed or not in PATH.\x1b[0m');
+        process.exit(1);
     }
-    console.log('✅ Setup complete!');
-} else if (command === 'docker') {
-    const generateDocker = (orm) => {
-        console.log(`🐳 Generating Docker files for ORM: ${orm}...`);
-        
-        let dockerfile = '';
-        if (orm === 'prisma') {
-            dockerfile = `# ── Build Stage ──
+
+    // 2. Clone to temporary directory
+    console.log('\x1b[36mFetching latest blueprints...\x1b[0m');
+    const tempDir = path.join(process.cwd(), `.temp-blueprints-${Date.now()}`);
+    
+    try {
+        execSync(`git clone --depth 1 ${REPO_URL} "${tempDir}"`, { stdio: 'ignore' });
+    } catch (e) {
+        console.error('\x1b[31m❌ Error: Failed to clone repository.\x1b[0m');
+        if (fs.existsSync(tempDir)) {
+            fs.rmSync(tempDir, { recursive: true, force: true });
+        }
+        process.exit(1);
+    }
+
+    // Setup interactive prompt
+    const rl = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout
+    });
+    const ask = (query) => new Promise((resolve) => rl.question(query, resolve));
+    
+    const askYesNo = async (question, defaultVal = 'Y') => {
+        const suffix = defaultVal === 'Y' ? '[Y/n]' : '[y/N]';
+        while (true) {
+            const answer = await ask(`❓ ${question} ${suffix}: `);
+            const choice = answer.trim().toLowerCase();
+            if (choice === '') {
+                return defaultVal.toLowerCase() === 'y';
+            }
+            if (choice === 'y' || choice === 'yes') {
+                return true;
+            }
+            if (choice === 'n' || choice === 'no') {
+                return false;
+            }
+            console.log('Please answer yes or no.');
+        }
+    };
+
+    console.log('\n\x1b[1m🐳 How would you like to install the standard backend blueprints?\x1b[0m');
+    console.log('  \x1b[32m1)\x1b[0m All Blueprints (Recommended - Complete 22-specification suite)');
+    console.log('  \x1b[32m2)\x1b[0m Category-based Selection (Meta, Auth, Data, Core API, DevOps, SEO/GEO)');
+    console.log('  \x1b[32m3)\x1b[0m Custom File Selection (Select individual blueprints)');
+
+    let selectedFiles = [];
+    while (true) {
+        const opt = (await ask('\n👉 Enter choice [1-3]: ')).trim();
+        if (opt === '1') {
+            selectedFiles = [...ALL_FILES];
+            break;
+        } else if (opt === '2') {
+            console.log('\n\x1b[36m--- Category-based Selection ---\x1b[0m');
+            if (await askYesNo('Include Meta Blueprints? (overview, filestructure, conventions)', 'Y')) {
+                selectedFiles.push(...META_FILES);
+            }
+            if (await askYesNo('Include Database & Persistence Blueprints? (Prisma/drizzle ORM schemas)', 'Y')) {
+                selectedFiles.push(...DATABASE_FILES);
+            }
+            if (await askYesNo('Include Security & Authentication Blueprints? (Clerk auth, RBAC, rate-limiting)', 'Y')) {
+                selectedFiles.push(...AUTH_FILES);
+            }
+            if (await askYesNo('Include Core API Architecture Blueprints? (modules, validations, errors, logging)', 'Y')) {
+                selectedFiles.push(...CORE_FILES);
+            }
+            if (await askYesNo('Include Testing & DevOps Blueprints? (testing, docker deployment)', 'Y')) {
+                selectedFiles.push(...DEVOPS_FILES);
+            }
+            if (await askYesNo('Include SEO & GEO Blueprints? (sitemaps, robots, AI search engine citations)', 'Y')) {
+                selectedFiles.push(...SEO_FILES);
+            }
+            break;
+        } else if (opt === '3') {
+            console.log('\n\x1b[36m--- Custom File Selection ---\x1b[0m');
+            for (const f of ALL_FILES) {
+                const desc = FILE_DESCS[f];
+                if (await askYesNo(`Include ${f} (${desc})?`, 'Y')) {
+                    selectedFiles.push(f);
+                }
+            }
+            break;
+        } else {
+            console.log('\x1b[31mInvalid selection. Please choose 1, 2, or 3.\x1b[0m');
+        }
+    }
+
+    rl.close();
+
+    if (selectedFiles.length === 0) {
+        console.log('\x1b[33m⚠️ No files selected. Setup aborted.\x1b[0m');
+        fs.rmSync(tempDir, { recursive: true, force: true });
+        process.exit(0);
+    }
+
+    // 3. Create destination directory and copy selected files
+    const schemaDestDir = path.join(DEST_DIR, 'schema');
+    if (!fs.existsSync(schemaDestDir)) {
+        fs.mkdirSync(schemaDestDir, { recursive: true });
+    }
+
+    let installedCount = 0;
+    for (const f of selectedFiles) {
+        const srcPath = path.join(tempDir, 'schema', f);
+        const destPath = path.join(schemaDestDir, f);
+        if (fs.existsSync(srcPath)) {
+            fs.copyFileSync(srcPath, destPath);
+            installedCount++;
+        }
+    }
+
+    // Remove any old unselected blueprints from the schema folder to ensure a clean sync
+    for (const f of ALL_FILES) {
+        if (!selectedFiles.includes(f)) {
+            const destPath = path.join(schemaDestDir, f);
+            if (fs.existsSync(destPath)) {
+                fs.unlinkSync(destPath);
+            }
+        }
+    }
+
+    // Clean up temporary clone
+    fs.rmSync(tempDir, { recursive: true, force: true });
+
+    console.log(`\n\x1b[32m✅ Setup complete! Installed ${installedCount} blueprints in ${schemaDestDir}\x1b[0m`);
+};
+
+const generateDocker = (orm) => {
+    console.log(`🐳 Generating Docker files for ORM: ${orm}...`);
+    
+    let dockerfile = '';
+    if (orm === 'prisma') {
+        dockerfile = `# ── Build Stage ──
 FROM node:20-alpine AS builder
 WORKDIR /app
 COPY package*.json ./
@@ -51,8 +231,8 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \\
   CMD wget --no-verbose --tries=1 --spider http://localhost:3000/api/v1/health || exit 1
 CMD ["node", "dist/server.js"]
 `;
-        } else if (orm === 'drizzle') {
-            dockerfile = `# ── Build Stage ──
+    } else if (orm === 'drizzle') {
+        dockerfile = `# ── Build Stage ──
 FROM node:20-alpine AS builder
 WORKDIR /app
 COPY package*.json ./
@@ -73,9 +253,9 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \\
   CMD wget --no-verbose --tries=1 --spider http://localhost:3000/api/v1/health || exit 1
 CMD ["node", "dist/server.js"]
 `;
-        }
-        
-        const dockerCompose = `services:
+    }
+    
+    const dockerCompose = `services:
   api:
     build: .
     ports:
@@ -106,32 +286,43 @@ volumes:
   pgdata:
 `;
 
-        fs.writeFileSync(path.join(process.cwd(), 'Dockerfile'), dockerfile);
-        fs.writeFileSync(path.join(process.cwd(), 'docker-compose.yml'), dockerCompose);
-        console.log('✅ Dockerfile and docker-compose.yml created successfully!');
-    };
+    fs.writeFileSync(path.join(process.cwd(), 'Dockerfile'), dockerfile);
+    fs.writeFileSync(path.join(process.cwd(), 'docker-compose.yml'), dockerCompose);
+    console.log('✅ Dockerfile and docker-compose.yml created successfully!');
+};
 
-    let orm = args[1];
-    if (orm === 'prisma' || orm === 'drizzle') {
-        generateDocker(orm);
+const main = async () => {
+    if (command === 'init' || !command) {
+        await runInit();
+    } else if (command === 'docker') {
+        let orm = args[1];
+        if (orm === 'prisma' || orm === 'drizzle') {
+            generateDocker(orm);
+        } else {
+            const rl = readline.createInterface({
+                input: process.stdin,
+                output: process.stdout
+            });
+            
+            rl.question('🐳 Which ORM would you like to use? (prisma/drizzle): ', (answer) => {
+                const selected = answer.trim().toLowerCase();
+                if (selected === 'prisma' || selected === 'drizzle') {
+                    generateDocker(selected);
+                } else {
+                    console.log('❌ Invalid ORM. Defaulting to prisma.');
+                    generateDocker('prisma');
+                }
+                rl.close();
+            });
+        }
     } else {
-        const rl = readline.createInterface({
-            input: process.stdin,
-            output: process.stdout
-        });
-        
-        rl.question('🐳 Which ORM would you like to use? (prisma/drizzle): ', (answer) => {
-            const selected = answer.trim().toLowerCase();
-            if (selected === 'prisma' || selected === 'drizzle') {
-                generateDocker(selected);
-            } else {
-                console.log('❌ Invalid ORM. Defaulting to prisma.');
-                generateDocker('prisma');
-            }
-            rl.close();
-        });
+        console.log('❌ Unknown command. Available commands: init, docker [prisma|drizzle]');
+        process.exit(1);
     }
-} else {
-    console.log('❌ Unknown command. Available commands: init, docker [prisma|drizzle]');
+};
+
+main().catch((err) => {
+    console.error('Fatal error during execution:', err);
     process.exit(1);
-}
+});
+

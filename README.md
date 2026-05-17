@@ -24,9 +24,18 @@ Run this command inside your backend project folder to install or update the sta
 ```bash
 curl -sSL https://raw.githubusercontent.com/bochamaakram/backendbot/main/install.sh | bash
 ```
-after installation prompt the ai agent 
+
+> [!TIP]
+> **Interactive Custom Setup**: The installer provides a interactive setup wizard with three modes:
+> - **All Blueprints (Recommended)**: Installs the complete 22-specification suite.
+> - **Category-based Selection**: Choose high-level blueprint categories to include (e.g. Meta, Auth, Data, Core API, DevOps, SEO/GEO).
+> - **Custom File Selection**: Interactively prompt for each individual blueprint file one by one.
+>
+> This lets you install only what is relevant to your specific project stack!
+
+After installation prompt the AI agent:
 >"Before starting, read `.backend-blueprints/schema/_overview.md` and adhere to all architectural boundaries, code conventions, schemas, and API response rules defined in `.backend-blueprints/schema/`."
->""
+
 
 ---
 
