@@ -1,6 +1,6 @@
 #  BackendBot — Architecture Blueprint
 
- **Single Source of Truth for Back Office API Architectures.**
+**Single Source of Truth for Back Office API Architectures.**
 
 BackendBot is an industry-grade, schema-driven blueprint repository designed to define, structure, and document Back Office Express/TypeScript APIs. It provides a set of standardized project instructions that can be synced to your local machine for use with AI coding assistants.
 
@@ -8,40 +8,68 @@ BackendBot is an industry-grade, schema-driven blueprint repository designed to 
 
 ## Features at a Glance
 
-- **Standardized Blueprints**: Access standard backend blueprints for any project.
-- **Local Sync Engine**: Easily clone or update the blueprints on your machine using the installation script.
-- **AI-Agent Ready**: Immutable guidelines structured specifically for AI-assisted development tools (like Gemini, Cursor, etc.).
-- **Comprehensive Standard**: Includes 21 rigorous, production-tested blueprint files.
+- **Standardized Blueprints**: 22 production-tested backend architecture specifications.
+- **Bundled UI/UX Skill**: Includes the [UI/UX Pro Max](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) AI design intelligence skill (67 UI styles, 161 palettes, 57 font pairings, 99 UX guidelines, and a design system generator).
+- **Local Sync Engine**: Easily install or update blueprints with the interactive installer.
+- **AI-Agent Ready**: Immutable guidelines structured for AI-assisted development tools (Gemini, Claude, Cursor, Copilot, etc.).
 
 ---
 
 ## Quick Start for Developers
 
-You can clone and sync these blueprints to your local project directory (`.backend-blueprints`) with a single terminal command.
+Run this inside your backend project folder:
 
-### Installation 
-Run this command inside your backend project folder to install or update the standard project instructions:
 ```bash
 curl -sSL https://raw.githubusercontent.com/bochamaakram/backendbot/main/install.sh | bash
 ```
 
-> [!TIP]
-> **Interactive Custom Setup**: The installer provides a interactive setup wizard with three modes:
-> - **All Blueprints (Recommended)**: Installs the complete 22-specification suite.
-> - **Category-based Selection**: Choose high-level blueprint categories to include (e.g. Meta, Auth, Data, Core API, DevOps, SEO/GEO).
-> - **Custom File Selection**: Interactively prompt for each individual blueprint file one by one.
->
-> This lets you install only what is relevant to your specific project stack!
+The installer runs a **two-step wizard**:
 
-After installation prompt the AI agent:
->"Before starting, read `.backend-blueprints/schema/_overview.md` and adhere to all architectural boundaries, code conventions, schemas, and API response rules defined in `.backend-blueprints/schema/`."
+**Step 1 — Backend Blueprints** (pick one):
+- `1` All Blueprints — Complete 22-specification suite *(recommended)*
+- `2` Category-based — Choose by category (Meta, Auth, Data, Core API, DevOps, SEO/GEO)
+- `3` Custom — Select individual blueprints one by one
 
+**Step 2 — UI/UX Pro Max Skill** *(optional, default: yes)*:
+- Installs the design intelligence skill into `.backend-blueprints/skills/ui-ux-pro-max/`
+- Gives your AI access to 67 UI styles, 161 color palettes, 57 font pairings, and a reasoning-based design system generator
+
+After installation, prompt your AI agent:
+
+```
+Before starting, read `.backend-blueprints/schema/_overview.md` and adhere to all
+architectural boundaries, code conventions, schemas, and API response rules defined
+in `.backend-blueprints/schema/`. Also read `.backend-blueprints/skills/ui-ux-pro-max/SKILL.md`
+for UI/UX design intelligence.
+```
 
 ---
 
-## Production-Ready Blueprints (21 Specifications)
+## What Gets Installed
 
-The repository contains the following comprehensive architectural specifications in the `schema/` directory:
+```
+.backend-blueprints/
+├── schema/                        ← Backend architecture blueprints
+│   ├── _overview.md
+│   ├── _authentication.md
+│   └── ... (up to 22 files)
+└── skills/                        ← Bundled AI skills
+    └── ui-ux-pro-max/
+        ├── SKILL.md               ← AI design intelligence rules
+        ├── scripts/
+        │   ├── search.py          ← Design system generator (requires Python 3)
+        │   └── design_system.py
+        └── data/
+            ├── styles.csv         ← 67 UI styles
+            ├── colors.csv         ← 161 color palettes
+            ├── typography.csv     ← 57 font pairings
+            ├── ux-guidelines.csv  ← 99 UX guidelines
+            └── ...
+```
+
+---
+
+## Production-Ready Blueprints (22 Specifications)
 
 | Blueprint Specification | Domain | Purpose & Scope |
 | :--- | :--- | :--- |
@@ -70,11 +98,44 @@ The repository contains the following comprehensive architectural specifications
 
 ---
 
+## Bundled Skill: UI/UX Pro Max
+
+The installer optionally bundles the [UI/UX Pro Max](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) skill (86k+ ⭐) directly into your project — no extra tools required.
+
+| Feature | Details |
+| :--- | :--- |
+| **Design System Generator** | AI reasoning engine that generates complete, tailored design systems |
+| **67 UI Styles** | Glassmorphism, Claymorphism, Minimalism, Brutalism, Neumorphism, Bento Grid, Dark Mode, and more |
+| **161 Color Palettes** | Industry-specific, curated palettes aligned to 161 product categories |
+| **57 Font Pairings** | Google Fonts typography combinations with mood & use-case guidance |
+| **99 UX Guidelines** | Best practices, anti-patterns, and accessibility rules |
+| **Python Search Engine** | `search.py` — query any domain (styles, typography, charts, stacks) |
+
+> [!NOTE]
+> The Python search engine (`search.py`) requires Python 3. The `SKILL.md` file works standalone without Python — just read it with your AI.
+
+### Using the UI/UX Skill
+
+After install, prompt your AI:
+
+```
+I am building the [Page Name] page. Read .backend-blueprints/skills/ui-ux-pro-max/SKILL.md
+for UI/UX design intelligence and generate a complete design system before writing code.
+```
+
+Or run the design system generator directly:
+
+```bash
+python3 .backend-blueprints/skills/ui-ux-pro-max/scripts/search.py "SaaS dashboard" --design-system -p "MyApp"
+```
+
+---
+
 ## AI Agent Integration
 
-These blueprints are explicitly designed to serve as **immutable rules** for AI-assisted development (such as Gemini, Claude, ChatGPT, or Cursor). 
+These blueprints are designed to serve as **immutable rules** for AI-assisted development (Claude, Gemini, ChatGPT, Cursor, Copilot, etc.).
 
-Before generating code inside your project, simply instruct your AI assistant:
+Before generating code, instruct your AI:
 
-> *"Before starting, read `.backend-blueprints/schema/_overview.md` and adhere to all architectural boundaries, code conventions, schemas, and API response rules defined in `.backend-blueprints/schema/`."*
+> *"Before starting, read `.backend-blueprints/schema/_overview.md` and adhere to all architectural boundaries, code conventions, schemas, and API response rules defined in `.backend-blueprints/schema/`. Also read `.backend-blueprints/skills/ui-ux-pro-max/SKILL.md` for UI/UX design intelligence."*
 

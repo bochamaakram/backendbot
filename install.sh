@@ -3,6 +3,8 @@
 # Define the repository and destination
 REPO_URL="https://github.com/bochamaakram/backendbot.git"
 DEST_DIR="$PWD/.backend-blueprints" # this will be copied to your current folder
+SKILL_SRC="skills/ui-ux-pro-max"
+SKILL_DEST="$DEST_DIR/skills/ui-ux-pro-max"
 
 # Color Definitions
 NC='\033[0m'
@@ -208,4 +210,28 @@ done
 # Cleanup temp
 rm -rf "$TEMP_DIR"
 
-echo -e "\n${GREEN}✅ Setup complete! Installed ${INSTALLED_COUNT} blueprints in $DEST_DIR/schema${NC}"
+echo -e "\n${GREEN}✅ Blueprints installed! Installed ${INSTALLED_COUNT} blueprints in $DEST_DIR/schema${NC}"
+
+# ──────────────────────────────────────────────────────────────────────────────
+# STEP 2: UI/UX Pro Max Skill (bundled AI design intelligence)
+# ──────────────────────────────────────────────────────────────────────────────
+echo -e "\n${BOLD}🎨 UI/UX Pro Max Skill${NC}"
+echo -e "  Provides design intelligence for building professional UI/UX (67 styles,"
+echo -e "  161 palettes, 57 font pairings, 99 UX guidelines, design system generator)."
+
+if prompt_yes_no "Include UI/UX Pro Max Skill? (recommended for full-stack projects)" "Y"; then
+    # Determine the script's own directory (works even via curl | bash via TEMP_DIR)
+    SKILL_TEMP_SRC="$TEMP_DIR/$SKILL_SRC"
+    if [ -d "$SKILL_TEMP_SRC" ]; then
+        mkdir -p "$SKILL_DEST"
+        cp -r "$SKILL_TEMP_SRC/" "$SKILL_DEST/"
+        echo -e "${GREEN}✅ UI/UX Pro Max Skill installed in $SKILL_DEST${NC}"
+    else
+        echo -e "${YELLOW}⚠️  Skill files not found in repo. Skipping skill installation.${NC}"
+    fi
+else
+    echo -e "${YELLOW}⏭  Skipped UI/UX Pro Max Skill.${NC}"
+fi
+
+echo -e "\n${GREEN}🚀 Setup complete!${NC} Installed ${INSTALLED_COUNT} blueprints in ${BOLD}$DEST_DIR/schema${NC}"
+echo -e "   Prompt your AI: ${CYAN}\"Read .backend-blueprints/schema/_overview.md and adhere to all blueprints.\"${NC}"

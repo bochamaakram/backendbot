@@ -5,11 +5,27 @@ const path = require('path');
 const { execSync } = require('child_process');
 const readline = require('readline');
 
+// Recursive directory copy helper
+const copyDirSync = (src, dest) => {
+    fs.mkdirSync(dest, { recursive: true });
+    for (const entry of fs.readdirSync(src, { withFileTypes: true })) {
+        const srcPath = path.join(src, entry.name);
+        const destPath = path.join(dest, entry.name);
+        if (entry.isDirectory()) {
+            copyDirSync(srcPath, destPath);
+        } else {
+            fs.copyFileSync(srcPath, destPath);
+        }
+    }
+};
+
 const args = process.argv.slice(2);
 const command = args[0];
 
 const DEST_DIR = path.join(process.cwd(), '.backend-blueprints');
 const REPO_URL = 'https://github.com/bochamaakram/backendbot.git';
+const SKILL_SRC = 'skills/ui-ux-pro-max';
+const SKILL_DEST = path.join(DEST_DIR, 'skills', 'ui-ux-pro-max');
 
 // Define files under each category
 const META_FILES = ["_overview.md", "_filestructure.md", "_conventions.md"];
@@ -196,10 +212,45 @@ const runInit = async () => {
         }
     }
 
+    console.log(`\n\x1b[32m\u2705 Blueprints installed! Installed ${installedCount} blueprints in ${schemaDestDir}\x1b[0m`);
+
+    // ──────────────────────────────────────────────────────────────────────────
+    // STEP 2: UI/UX Pro Max Skill (bundled AI design intelligence)
+    // ──────────────────────────────────────────────────────────────────────────
+    console.log('\n\x1b[1m\ud83c\udfa8 UI/UX Pro Max Skill\x1b[0m');
+    console.log('  Provides design intelligence for building professional UI/UX (67 styles,');
+    console.log('  161 palettes, 57 font pairings, 99 UX guidelines, design system generator).');
+
+    const rl3 = readline.createInterface({ input: process.stdin, output: process.stdout });
+    const includeSkill = await new Promise((resolve) => {
+        const askSkill = async () => {
+            rl3.question('\u2753 Include UI/UX Pro Max Skill? (recommended for full-stack projects) [Y/n]: ', (ans) => {
+                const choice = ans.trim().toLowerCase();
+                if (choice === '' || choice === 'y' || choice === 'yes') { rl3.close(); resolve(true); }
+                else if (choice === 'n' || choice === 'no') { rl3.close(); resolve(false); }
+                else { console.log('Please answer yes or no.'); askSkill(); }
+            });
+        };
+        askSkill();
+    });
+
+    const skillTempSrc = path.join(tempDir, SKILL_SRC);
+    if (includeSkill) {
+        if (fs.existsSync(skillTempSrc)) {
+            copyDirSync(skillTempSrc, SKILL_DEST);
+            console.log(`\x1b[32m\u2705 UI/UX Pro Max Skill installed in ${SKILL_DEST}\x1b[0m`);
+        } else {
+            console.log('\x1b[33m\u26a0\ufe0f  Skill files not found in repo. Skipping skill installation.\x1b[0m');
+        }
+    } else {
+        console.log('\x1b[33m\u23ed  Skipped UI/UX Pro Max Skill.\x1b[0m');
+    }
+
     // Clean up temporary clone
     fs.rmSync(tempDir, { recursive: true, force: true });
 
-    console.log(`\n\x1b[32m✅ Setup complete! Installed ${installedCount} blueprints in ${schemaDestDir}\x1b[0m`);
+    console.log(`\n\x1b[32m\ud83d\ude80 Setup complete!\x1b[0m Installed ${installedCount} blueprints in \x1b[1m${schemaDestDir}\x1b[0m`);
+    console.log(`   Prompt your AI: \x1b[36m"Read .backend-blueprints/schema/_overview.md and adhere to all blueprints."\x1b[0m`);
 };
 
 const generateDocker = (orm) => {
